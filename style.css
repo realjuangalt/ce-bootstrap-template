@@ -1,0 +1,578 @@
+/* Defines CSS custom properties (variables) for theming */
+:root {    /* Sets the default body background color to a dark gray (#1a1a1a) */
+    --bs-body-bg: #1a1a1a;    /* Sets the default text color to an orange shade (#f7931a) */
+    --bs-body-color: #f7931a;    /* Defines the monospace font stack, using Courier New with fallback to system monospace */
+    --bs-font-monospace: 'Courier New', monospace;    /* Sets the primary color to the same orange shade (#f7931a) */
+    --bs-primary: #f7931a;    /* Defines the RGB values for the primary color (247, 147, 26) for use in rgba */
+    --bs-primary-rgb: 247, 147, 26;    /* Sets the secondary background color to a darker gray (#2d2d2d) */
+    --bs-secondary: #2d2d2d;    /* Sets the tertiary background color to a slightly lighter gray (#1f1f1f) */
+    --bs-tertiary-bg: #1f1f1f;    /* Defines the hover color for links as a darker orange (#e07b00) */
+    --bs-link-hover-color: #e07b00;    /* Sets the border color to the primary orange (#f7931a) */
+    --bs-border-color: #f7931a;    /* Defines the default border radius as 5px */
+    --bs-border-radius: 5px;    /* Defines a smaller border radius as 3px */
+    --bs-border-radius-sm: 3px;    /* Sets the border radius for buttons to 3px */
+    --bs-button-border-radius: 3px;    /* Defines the focus ring color as a semi-transparent orange (50% opacity) */
+    --bs-focus-ring-color: rgba(247, 147, 26, 0.5);
+}
+
+/* Overrides theme variables for light mode */
+body.light-mode {    /* Sets the body background color to white (#ffffff) in light mode */
+    --bs-body-bg: #ffffff;    /* Sets the text color to black (#000000) in light mode */
+    --bs-body-color: #000000;    /* Changes the primary color to a blue shade (#007bff) in light mode */
+    --bs-primary: #007bff;    /* Defines the RGB values for the light mode primary color (0, 123, 255) */
+    --bs-primary-rgb: 0, 123, 255;    /* Sets the secondary background color to a light gray (#f8f9fa) in light mode */
+    --bs-secondary: #f8f9fa;    /* Sets the tertiary background color to a medium gray (#e9ecef) in light mode */
+    --bs-tertiary-bg: #e9ecef;    /* Sets the link hover color to a darker blue (#0056b3) in light mode */
+    --bs-link-hover-color: #0056b3;    /* Sets the border color to black (#000000) in light mode */
+    --bs-border-color: #000000;    /* Defines the focus ring color as a semi-transparent blue (50% opacity) in light mode */
+    --bs-focus-ring-color: rgba(0, 123, 255, 0.5);
+}
+
+/* Styles for base elements */
+body {    /* Applies the theme’s background color using the --bs-body-bg variable */
+    background-color: var(--bs-body-bg);    /* Sets the text color using the --bs-body-color variable */
+    color: var(--bs-body-color);    /* Sets the font to the monospace stack defined in --bs-font-monospace */
+    font-family: var(--bs-font-monospace);    /* Adds 10px padding around the body */
+    padding: 10px;    /* Uses flexbox for layout */
+    display: flex;    /* Arranges flex items in a column */
+    flex-direction: column;    /* Ensures the body takes at least the full viewport height */
+    min-height: 100vh;
+}
+
+/* Styles for elements with the 'box' class */
+.box {    /* Sets the background color using the --bs-secondary variable */
+    background-color: var(--bs-secondary);    /* Adds a 1px solid border with the --bs-border-color */
+    border: 1px solid var(--bs-border-color);    /* Applies the default border radius from --bs-border-radius */
+    border-radius: var(--bs-border-radius);    /* Adds 10px padding inside the box */
+    padding: 10px;    /* Adds a subtle shadow using the primary color with 30% opacity */
+    box-shadow: 0 0 8px rgba(var(--bs-primary-rgb), 0.3);
+}
+
+/* Overrides box styles in light mode */
+body.light-mode .box {    /* Increases border thickness to 2px in light mode */
+    border: 2px solid var(--bs-border-color);    /* Changes the shadow to a black-based shadow with 30% opacity */
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Styles for heading elements */
+h1, h2, h3, h4, h5, h6 {    /* Sets the heading text color to the theme’s --bs-body-color */
+    color: var(--bs-body-color);    /* Uses Roboto font with fallback to --bs-font-monospace */
+    font-family: 'Roboto', var(--bs-font-monospace);    /* Sets the font weight to bold (700) */
+    font-weight: 700;
+}
+
+/* Styles for the navbar */
+.navbar {    /* Sets padding to 5px top/bottom and 10px left/right */
+    padding: 5px 10px;
+}
+
+/* Styles for the navbar brand */
+.navbar-brand {    /* Uses flexbox to align items */
+    display: flex;    /* Vertically centers flex items */
+    align-items: center;    /* Forces the text color to use --bs-body-color, overriding defaults */
+    color: var(--bs-body-color) !important;    /* Sets the font to the monospace stack */
+    font-family: var(--bs-font-monospace);
+}
+
+/* Hover styles for the navbar brand */
+.navbar-brand:hover {    /* Changes the text color to --bs-link-hover-color on hover */
+    color: var(--bs-link-hover-color) !important;
+}
+
+/* Styles for the navbar brand text */
+.navbar-brand-text {    /* Uses flexbox for layout */
+    display: flex;    /* Arranges flex items in a row */
+    flex-direction: row;    /* Vertically centers flex items */
+    align-items: center;    /* Sets the font size to 1em (16px by default) */
+    font-size: 1em;
+}
+
+/* Styles for the top navbar container */
+.navbar-top {    /* Uses flexbox for layout */
+    display: flex;    /* Vertically centers flex items */
+    align-items: center;    /* Distributes space between flex items */
+    justify-content: space-between;    /* Stretches to full width */
+    width: 100%;
+}
+
+/* Styles for the Core Explorer logo */
+.cek-logo {    /* Sets the logo width to 40px */
+    width: 40px;    /* Sets the logo height to 40px */
+    height: 40px;    /* Makes the logo circular */
+    border-radius: 50%;    /* Ensures the image fits without distortion */
+    object-fit: contain;    /* Adds 10px margin to the right */
+    margin-right: 10px;
+}
+
+/* Styles for the navbar navigation list */
+.navbar-nav {    /* Uses flexbox for layout */
+    display: flex;    /* Arranges flex items in a row */
+    flex-direction: row;    /* Vertically centers flex items */
+    align-items: center;
+}
+
+/* Styles for navigation links */
+.nav-link {    /* Forces the text color to use --bs-body-color */
+    color: var(--bs-body-color) !important;    /* Sets the font size to 1em */
+    font-size: 1em;    /* Sets padding to 6px top/bottom and 8px left/right */
+    padding: 6px 8px;    /* Sets the line height to 1.5 for vertical spacing */
+    line-height: 1.5;    /* Removes the default border */
+    border: none;    /* Applies the smaller border radius from --bs-border-radius-sm */
+    border-radius: var(--bs-border-radius-sm);    /* Adds 2px margin on left and right */
+    margin: 0 2px;    /* Sets the width to 32px */
+    width: 32px;    /* Sets the height to 32px */
+    height: 32px;    /* Uses inline-flex for centering content */
+    display: inline-flex;    /* Vertically centers flex items */
+    align-items: center;    /* Horizontally centers flex items */
+    justify-content: center;    /* Centers text horizontally */
+    text-align: center;
+}
+
+/* Hover styles for navigation links */
+.nav-link:hover {    /* Changes the text color to --bs-link-hover-color on hover */
+    color: var(--bs-link-hover-color) !important;    /* Sets a gray background (#555) on hover */
+    background-color: #555;
+}
+
+/* Hover styles for navigation links in light mode */
+body.light-mode .nav-link:hover {    /* Sets a lighter gray background (#bbb) on hover in light mode */
+    background-color: #bbb;
+}
+
+/* Styles for the theme toggle button */
+.theme-toggle-btn {    /* Removes the default background */
+    background: none;    /* Removes the default border */
+    border: none;    /* Applies the smaller border radius from --bs-border-radius-sm */
+    border-radius: var(--bs-border-radius-sm);    /* Sets the text/icon color to yellow (#ffc107) */
+    color: #ffc107;    /* Sets the font size to 1em */
+    font-size: 1em;    /* Sets padding to 6px top/bottom and 8px left/right */
+    padding: 6px 8px;    /* Sets the line height to 1.5 */
+    line-height: 1.5;    /* Changes the cursor to a pointer on hover */
+    cursor: pointer;    /* Smoothly transitions color and background over 0.3 seconds */
+    transition: color 0.3s, background-color 0.3s;    /* Adds 2px margin on left and right */
+    margin: 0 2px;    /* Sets the width to 32px */
+    width: 32px;    /* Sets the height to 32px */
+    height: 32px;    /* Uses inline-flex for centering contnt */
+    display: inline-flex;    /* Vertically centers flex items */
+    align-items: center;    /* Horizontally centers flex items */
+    justify-content: center;    /* Centers text/icon horizontally */
+    text-align: center;
+}
+
+/* Hover styles for the theme toggle button */
+.theme-toggle-btn:hover {    /* Changes the text/icon color to --bs-link-hover-color on hover */
+    color: var(--bs-link-hover-color);    /* Sets a gray background (#555) on hover */
+    background-color: #555;
+}
+
+/* Hover styles for the theme toggle button in light mode */
+body.light-mode .theme-toggle-btn:hover {    /* Sets a lighter gray background (#bbb) on hover in light mode */
+    background-color: #bbb;
+}
+
+/* Styles for the search bar */
+.search-bar {    /* Sets the background color using --bs-tertiary-bg */
+    background-color: var(--bs-tertiary-bg);    /* Adds a 1px solid border with --bs-border-color */
+    border: 1px solid var(--bs-border-color);    /* Applies the smaller border radius from --bs-border-radius-sm */
+    border-radius: var(--bs-border-radius-sm);    /* Sets the text color to --bs-body-color */
+    color: var(--bs-body-color);    /* Sets the font to the monospace stack */
+    font-family: var(--bs-font-monospace);    /* Sets padding to 6px top/bottom and 8px left/right */
+    padding: 6px 8px;    /* Sets the font size to 1em */
+    font-size: 1em;    /* Sets the line height to 1.5 */
+    line-height: 1.5;    /* Sets the width to 200px */
+    width: 200px;
+}
+
+/* Styles for the search bar when focused */
+.search-bar:focus {    /* Removes the default outline */
+    outline: none;    /* Changes the border color to --bs-primary */
+    border-color: var(--bs-primary);    /* Adds a glow effect using the primary color with 50% opacity */
+    box-shadow: 0 0 5px rgba(var(--bs-primary-rgb), 0.5);
+}
+
+/* Styles for the search button */
+.search-btn {    /* Removes the default background */
+    background: none;    /* Removes the default border */
+    border: none;    /* Applies the smaller border radius from --bs-border-radius-sm */
+    border-radius: var(--bs-border-radius-sm);    /* Sets the text/icon color to --bs-body-color */
+    color: var(--bs-body-color);    /* Sets padding to 6px top/bottom and 8px left/right */
+    padding: 6px 8px;
+    /* Sets the font size to 1em */    
+    font-size: 1em;
+    /* Sets the line height to 1.5 */
+    line-height: 1.5;
+    /* Changes the cursor to a pointer on hover */
+    cursor: pointer;
+    /* Smoothly transitions color and background over 0.3 seconds */
+    transition: color 0.3s, background-color 0.3s;
+    /* Sets the width to 32px */
+    width: 32px;
+    /* Sets the height to 32px */
+    height: 32px;
+    /* Uses inline-flex for centering content */
+    display: inline-flex;
+    /* Vertically centers flex items */
+    align-items: center;
+    /* Horizontally centers flex items */
+    justify-content: center;
+}
+
+/* Hover styles for the search button */
+.search-btn:hover {
+    /* Changes the text/icon color to --bs-link-hover-color on hover */
+    color: var(--bs-link-hover-color);
+    /* Sets a gray background (#555) on hover */
+    background-color: #555;
+}
+
+/* Hover styles for the search button in light mode */
+body.light-mode .search-btn:hover {
+    /* Sets a lighter gray background (#bbb) on hover in light mode */
+    background-color: #bbb;
+}
+
+/* Styles for the footer */
+footer {
+    /* Pushes the footer to the bottom of the flex container */
+    margin-top: auto;
+    /* Sets padding to 10px top/bottom and 0px left/right */
+    padding: 10px 0;
+    /* Centers text horizontally */
+    text-align: center;
+}
+
+/* Styles for the navbar navigation in the footer */
+footer .navbar-nav {
+    /* Centers flex items horizontally */
+    justify-content: center;
+}
+
+/* Styles for the main content container */
+.content-container {
+    /* Adds 10px margin to the top */
+    margin-top: 10px;
+    /* Allows the container to grow and fill available space */
+    flex: 1;
+}
+
+/* Styles for the project section */
+.project-section {
+    /* Uses flexbox for layout */
+    display: flex;
+    /* Vertically centers flex items */
+    align-items: center;
+    /* Adds 15px margin to the bottom */
+    margin-bottom: 15px;
+    /* Arranges flex items in a column */
+    flex-direction: column;
+}
+
+/* Styles for the project profile section */
+.project-profile {
+    /* Uses flexbox for layout */
+    display: flex;
+    /* Centers flex items horizontally */
+    justify-content: center;
+    /* Allows the section to grow and fill available space */
+    flex: 1;
+    /* Adds 15px margin to the bottom */
+    margin-bottom: 15px;
+}
+
+/* Styles for the project details container */
+.project-details {
+    /* Centers text horizontally */
+    text-align: center;
+}
+
+/* Styles for the project details heading */
+.project-details h3 {
+    /* Removes default margins */
+    margin: 0;
+    /* Sets the font size to 1.5em (24px by default) */
+    font-size: 1.5em;
+}
+
+/* Styles for the project details paragraph */
+.project-details p {
+    /* Sets margins to 5px top and 0px others */
+    margin: 5px 0 0;
+    /* Sets the font size to 0.9em (14.4px by default) */
+    font-size: 0.9em;
+}
+
+/* Styles for the statistics table (mobile view) */
+.stat-table {
+    /* Aligns the table to the right */
+    margin-left: auto;
+    /* Adds 15px margin to the bottom */
+    margin-bottom: 15px;
+}
+
+/* Styles for the table inside the statistics table */
+.stat-table table {
+    /* Collapses table borders for a cleaner look */
+    border-collapse: collapse;
+    /* Sets the table width to 100% of its container */
+    width: 100%;
+}
+
+/* Styles for table headers and cells in the statistics table */
+.stat-table th, .stat-table td {
+    /* Sets padding to 8px on all sides */
+    padding: 8px;
+    /* Sets the font size to 1em */
+    font-size: 1em;
+}
+
+/* Styles for table headers in the statistics table */
+.stat-table th {
+    /* Aligns text to the left */
+    text-align: left;
+}
+
+/* Styles for table cells in the statistics table */
+.stat-table td {
+    /* Aligns text to the right */
+    text-align: right;
+    /* Sets the font weight to bold */
+    font-weight: bold;
+    /* Sets the font size to 1.2em (19.2px by default) */
+    font-size: 1.2em;
+}
+
+/* Styles for the statistics row (wide screen view) */
+.stat-row {
+    /* Uses flexbox for layout */
+    display: flex;
+    /* Centers flex items horizontally */
+    justify-content: center;
+    /* Vertically centers flex items */
+    align-items: center;
+    /* Sets the font size to 1em */
+    font-size: 1em;
+    /* Adds 15px margin to the bottom */
+    margin-bottom: 15px;
+    /* Sets padding to 10px on all sides */
+    padding: 10px;
+}
+
+/* Styles for individual statistic items */
+.stat-item {
+    /* Uses inline-flex for layout */
+    display: inline-flex;
+    /* Vertically centers flex items */
+    align-items: center;
+}
+
+/* Styles for statistic labels */
+.stat-label {
+    /* Sets the font size to 1em */
+    font-size: 1em;
+}
+
+/* Styles for statistic values */
+.stat-value {
+    /* Sets the font size to 1.2em (19.2px by default) */
+    font-size: 1.2em;
+    /* Sets the font weight to bold */
+    font-weight: bold;
+    /* Adds 5px margin to the left */
+    margin-left: 5px;
+}
+
+/* Styles for the divider between statistics */
+.stat-divider {
+    /* Sets margins to 0px top/bottom and 10px left/right */
+    margin: 0 10px;
+    /* Sets the text color to --bs-body-color */
+    color: var(--bs-body-color);
+}
+
+/* Styles for placeholder graphic elements */
+.graphic-placeholder {
+    /* Sets the height to 300px */
+    height: 300px;
+    /* Uses flexbox for layout */
+    display: flex;
+    /* Vertically centers flex items */
+    align-items: center;
+    /* Horizontally centers flex items */
+    justify-content: center;
+    /* Sets the background color to --bs-tertiary-bg */
+    background-color: var(--bs-tertiary-bg);
+    /* Adds a 1px solid border with --bs-border-color */
+    border: 1px solid var(--bs-border-color);
+    /* Applies the smaller border radius from --bs-border-radius-sm */
+    border-radius: var(--bs-border-radius-sm);
+    /* Sets the font size to 1em */
+    font-size: 1em;
+    /* Centers text horizontally */
+    text-align: center;
+    /* Sets padding to 10px on all sides */
+    padding: 10px;
+    /* Adds 15px margin to the bottom */
+    margin-bottom: 15px;
+}
+
+/* Styles for icons within navigation links */
+.nav-link i {
+    /* Sets the font size to 1em */
+    font-size: 1em;
+    /* Aligns the icon vertically with text */
+    vertical-align: middle;
+}
+
+/* Media query for screens 600px and wider */
+@media (min-width: 600px) {
+    /* Styles for the container class */
+    .container {
+        /* Limits the maximum width to 1200px */
+        max-width: 1200px;
+    }
+    /* Styles for the Core Explorer logo */
+    .cek-logo {
+        /* Increases the logo width to 48px */
+        width: 48px;
+        /* Increases the logo height to 48px */
+        height: 48px;
+    }
+    /* Styles for the navbar brand text */
+    .navbar-brand-text {
+        /* Increases the font size to 1.2em (19.2px by default) */
+        font-size: 1.2em;
+    }
+    /* Styles for navigation links, theme toggle, and search button */
+    .nav-link, .theme-toggle-btn, .search-btn {
+        /* Sets the font size to 1em */
+        font-size: 1em;
+    }
+    /* Styles for the search bar */
+    .search-bar {
+        /* Increases the width to 250px */
+        width: 250px;
+    }
+}
+
+/* Media query for screens 992px and wider */
+@media (min-width: 992px) {
+    /* Styles for the navbar navigation */
+    .navbar-nav {
+        /* Uses flexbox for layout */
+        display: flex;
+        /* Arranges flex items in a row */
+        flex-direction: row;
+        /* Vertically centers flex items */
+        align-items: center;
+    }
+    /* Styles for the search container */
+    .search-container {
+        /* Pushes the container to the right */
+        margin-left: auto;
+        /* Uses flexbox for layout */
+        display: flex;
+        /* Vertically centers flex items */
+        align-items: center;
+    }
+    /* Styles for the top navbar container */
+    .navbar-top {
+        /* Allows the container to grow and fill available space */
+        flex: 1;
+    }
+    /* Styles for the statistics table */
+    .stat-table {
+        /* Hides the table on wide screens */
+        display: none;
+    }
+    /* Styles for the statistics row */
+    .stat-row {
+        /* Shows the row using flexbox on wide screens */
+        display: flex;
+    }
+}
+
+/* Media query for screens narrower than 992px */
+@media (max-width: 991px) {
+    /* Styles for the project section */
+    .project-section {
+        /* Aligns flex items to the start (left) */
+        align-items: flex-start;
+    }
+    /* Styles for the project profile */
+    .project-profile {
+        /* Adds 15px margin to the bottom */
+        margin-bottom: 15px;
+    }
+    /* Styles for the statistics table */
+    .stat-table {
+        /* Removes margins */
+        margin: 0;
+        /* Sets the width to 100% */
+        width: 100%;
+        /* Ensures the maximum width is 100% */
+        max-width: 100%;
+    }
+    /* Styles for the navbar brand text */
+    .navbar-brand-text {
+        /* Arranges flex items in a column */
+        flex-direction: column;
+        /* Aligns flex items to the start (left) */
+        align-items: flex-start;
+    }
+    /* Styles for the search container */
+    .search-container {
+        /* Uses flexbox for layout */
+        display: flex;
+        /* Distributes space between flex items */
+        justify-content: space-between;
+        /* Adds 5px margin to the top */
+        margin-top: 5px;
+        /* Sets the width to 100% */
+        width: 100%;
+    }
+    /* Styles for the search bar */
+    .search-bar {
+        /* Sets the width to full width minus 36px (for the button) */
+        width: calc(100% - 36px);
+    }
+    /* Styles for the search button */
+    .search-btn {
+        /* Sets the width to 32px */
+        width: 32px;
+        /* Adds 4px margin to the left */
+        margin-left: 4px;
+    }
+    /* Styles for the statistics row */
+    .stat-row {
+        /* Hides the row on narrow screens */
+        display: none;
+    }
+}
+
+/* Media query for screens narrower than 576px */
+@media (max-width: 576px) {/* Styles for the project details heading */
+    .project-details h3 {
+        /* Reduces the font size to 1.2em (19.2px by default) */
+        font-size: 1.2em;
+    }
+    /* Styles for the project details paragraph */
+    .project-details p {
+        /* Reduces the font size to 0.8em (12.8px by default) */
+        font-size: 0.8em;
+    }
+    /* Styles for table headers and cells in the statistics table */
+    .stat-table th, .stat-table td {
+        /* Reduces the font size to 0.9em (14.4px by default) */
+        font-size: 0.9em;
+    }
+    /* Styles for table cells in the statistics table */
+    .stat-table td {
+        /* Overrides the font size to 1em (16px by default) */
+        font-size: 1em;
+    }
+    /* Styles for the search bar */
+    .search-bar {
+        /* Reduces the font size to 0.9em (14.4px by default) */
+        font-size: 0.9em;
+    }
+}
