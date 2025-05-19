@@ -1,43 +1,4 @@
-<script type="text/javascript"> //Begins a JavaScript block with explicit type declaration for compatibility
-        var gk_isXlsx = false; // Initializes a boolean flag to indicate whether XLSX file processing is enabled (default: false)
-        var gk_xlsxFileLookup = {}; // Creates an empty object to store mappings of filenames to XLSX file data
-        var gk_fileData = {}; // Creates an empty object to store raw file data (XLSX or other formats)
-        function filledCell(cell) { // Defines a helper function to determine if a cell contains valid data
-          return cell !== '' && cell != null; // Returns true if the cell is not an empty string and not null or undefined
-        }
-        function loadFileData(filename) { // Defines a function to load and process file data based on the provided filename
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) { // Checks if XLSX processing is enabled and the filename exists in the lookup table
-            try { // Starts a try-catch block to handle potential errors during XLSX file processing
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' }); // Reads XLSX file data from base64 format using SheetJS (XLSX library)
-                var firstSheetName = workbook.SheetNames[0]; // Retrieves the name of the first sheet in the workbook
-                var worksheet = workbook.Sheets[firstSheetName]; // Gets the first worksheet object from the workbook
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' }); // Converts the worksheet to JSON format, treating the first row as headers, excluding blank rows, and setting empty cells to an empty string
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell)); // Filters out rows where no cells contain valid data (using filledCell function)
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) => // Finds the index of the header row using a heuristic comparison
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length // Compares the number of filled cells in the current row to the next row, if it exists
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) { // Checks if no valid header row was found or if it’s beyond row 25
-                  headerRowIndex = 0; // Defaults to the first row as the header if the heuristic fails
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Creates a new worksheet from the filtered data starting at the header row
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 }); // Converts the new worksheet to CSV format, including headers
-                return csv; // Returns the processed CSV data as a string
-            } catch (e) { // Catches any errors that occur during XLSX processing
-                console.error(e); // Logs the error to the console for debugging
-                return ""; // Returns an empty string if an error occurs
-            }
-        }
-        return gk_fileData[filename] || ""; // Returns the raw file data for the filename if not XLSX, or an empty string if not found
-        }
-</script><!DOCTYPE html> <!-- Declares the document type as HTML5 -->
+<!DOCTYPE html> <!-- Declares the document type as HTML5 -->
 <html lang="en"> <!-- Defines the root HTML element with English as the language -->
 <head> <!-- Contains metadata and links to external resources for the page -->
   <meta charset="UTF-8"> <!-- Specifies UTF-8 character encoding for proper text rendering -->
@@ -157,8 +118,8 @@
       document.body.classList.toggle('light-mode'); // Toggles the 'light-mode' class on the body element to switch themes 
       elements.navbar.classList.toggle('navbar-dark'); // Toggles the 'navbar-dark' class on the navbar for dark theme styling 
       elements.navbar.classList.toggle('navbar-light'); // Toggles the 'navbar-light' class on the navbar for light theme styling 
-      const moonIcon = '<i class="fas fa-moon"></i>'; // Defines the HTML string for the moon icon (Font Awesome) 
-      const sunIcon = '<i class="fas fa-sun"></i>'; // Defines the HTML string for the sun icon (Font Awesome) 
+      const sunIcon = '<i class="fas fa-moon"></i>'; // Defines the HTML string for the moon icon (Font Awesome) 
+      const moonIcon = '<i class="fas fa-sun"></i>'; // Defines the HTML string for the sun icon (Font Awesome) 
       const headerBtn = elements.themeToggleHeader; // Stores a reference to the header theme toggle button 
       const footerBtn = elements.themeToggleFooter; // Stores a reference to the footer theme toggle button 
       if (document.body.classList.contains('light-mode')) { // Checks if the body element has the 'light-mode' class 
