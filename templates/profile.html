@@ -717,10 +717,10 @@ body:not(.light-mode) .btn-primary:hover {background-color: var(--bs-primary); b
     elements.themeToggleHeader.addEventListener('click', toggleTheme);
     elements.themeToggleFooter.addEventListener('click', toggleTheme);
 
-    // Function to send GraphQL queries to the server
+    // Function to send GraphQL queries directly to the API
     async function sendQuery(query) {
       try {
-        const response = await fetch('/api/query', {
+        const response = await fetch('http://coreexplorer.org/api/graphql', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query })
