@@ -37,6 +37,45 @@
         }
         return gk_fileData[filename] || "";
         }
+        </script><script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
         </script><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -318,18 +357,20 @@ body.light-mode .profile-picture i {
     margin: 0 10px;
     color: var(--bs-body-color);
 }
-.heatmap-placeholder {
+.commits-chart-container {
     height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background-color: var(--bs-tertiary-bg);
     border: 1px solid var(--bs-border-color);
     border-radius: var(--bs-border-radius-sm);
-    font-size: 1em;
-    text-align: center;
     padding: 10px;
     margin-bottom: 15px;
+}
+body.light-mode .commits-chart-container {
+    background-color: #e9ecef;
+}
+.commits-chart-container canvas {
+    max-height: 100%;
+    width: 100%;
 }
 .contribution-table {
     margin-bottom: 15px;
@@ -346,7 +387,7 @@ body.light-mode .profile-picture i {
 .contribution-table th {
     text-align: left;
 }
-/* Center the titles for heatmap and table */
+/* Center the titles for chart and table */
 h4 {
     text-align: center;
 }
@@ -426,8 +467,8 @@ h4 {
     .content-container h1 {font-size: 2.5em}
     .content-container p {font-size: 1.2em}
     .profile-details h3 {font-size: 2em}
-    /* Set max-width for heatmap placeholder, table, and stats box to prevent over-expansion */
-    .heatmap-placeholder {
+    /* Set max-width for chart, table, and stats box to prevent over-expansion */
+    .commits-chart-container {
         max-width: 800px;
         margin-left: auto;
         margin-right: auto;
@@ -520,8 +561,8 @@ body:not(.light-mode) .btn-primary:hover {background-color: var(--bs-primary); b
       </ul>
     </div>
     <div class="search-container">
-      <input type="text" class="search-bar" placeholder="Search...">
-      <button class="search-btn"><i class="fas fa-search"></i></button>
+      <input type="text" class="search-bar" id="search-bar" placeholder="Enter contributor email...">
+      <button class="search-btn" id="search-btn"><i class="fas fa-search"></i></button>
     </div>
   </nav>
 
@@ -533,8 +574,9 @@ body:not(.light-mode) .btn-primary:hover {background-color: var(--bs-primary); b
             <i class="bi bi-person-circle"></i>
           </div>
           <div class="profile-details">
-            <h3>Satoshi Nakamoto</h3>
-            <p>Started Contributing: January 3, 2009</p>
+            <h3 id="contributor-name">Loading...</h3>
+            <p id="contributor-start">Started Contributing: January 3, 2009</p>
+            <p id="repo-details">Loading repository details...</p>
           </div>
         </div>
         <div class="row">
@@ -543,31 +585,31 @@ body:not(.light-mode) .btn-primary:hover {background-color: var(--bs-primary); b
               <table>
                 <tr>
                   <th>Total Commits</th>
-                  <td>271</td>
+                  <td id="total-commits">271</td>
                 </tr>
                 <tr>
                   <th>Lines of Code</th>
-                  <td>36,000</td>
+                  <td id="lines-of-code">36,000</td>
                 </tr>
                 <tr>
                   <th>Files Created</th>
-                  <td>50</td>
+                  <td id="files-created">50</td>
                 </tr>
               </table>
               <div class="stat-row">
                 <div class="stat-item">
                   <span class="stat-label">Total Commits</span>
-                  <span class="stat-value">271</span>
+                  <span class="stat-value" id="total-commits-row">271</span>
                 </div>
                 <span class="stat-divider">|</span>
                 <div class="stat-item">
                   <span class="stat-label">Lines of Code</span>
-                  <span class="stat-value">36,000</span>
+                  <span class="stat-value" id="lines-of-code-row">36,000</span>
                 </div>
                 <span class="stat-divider">|</span>
                 <div class="stat-item">
                   <span class="stat-label">Files Created</span>
-                  <span class="stat-value">50</span>
+                  <span class="stat-value" id="files-created-row">50</span>
                 </div>
               </div>
             </div>
@@ -575,9 +617,9 @@ body:not(.light-mode) .btn-primary:hover {background-color: var(--bs-primary); b
         </div>
         <div class="row">
           <div class="col-12">
-            <h4>Code Base Dominance: 90%</h4>
-            <div class="heatmap-placeholder">
-              [Placeholder for Heatmap: Disk Analyzer Graphic Showing Code Base Dominance and Top Files Contributed]
+            <h4 style="padding-top: 20px;">Commits Over Time</h4>
+            <div class="commits-chart-container">
+              <canvas id="commitsChart"></canvas>
             </div>
           </div>
         </div>
@@ -647,11 +689,14 @@ body:not(.light-mode) .btn-primary:hover {background-color: var(--bs-primary); b
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script>
     const elements = {
       themeToggleHeader: document.getElementById('theme-toggle-header'),
       themeToggleFooter: document.getElementById('theme-toggle-footer'),
-      navbar: document.getElementById('navbar')
+      navbar: document.getElementById('navbar'),
+      searchBar: document.getElementById('search-bar'),
+      searchBtn: document.getElementById('search-btn')
     };
     function toggleTheme() {
       document.body.classList.toggle('light-mode');
@@ -671,6 +716,164 @@ body:not(.light-mode) .btn-primary:hover {background-color: var(--bs-primary); b
     }
     elements.themeToggleHeader.addEventListener('click', toggleTheme);
     elements.themeToggleFooter.addEventListener('click', toggleTheme);
+
+    // Function to send GraphQL queries to the server
+    async function sendQuery(query) {
+      try {
+        const response = await fetch('/api/query', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.errors) {
+          throw new Error(data.errors);
+        }
+
+        return data;
+      } catch (error) {
+        console.error('Error sending query:', error);
+        throw error;
+      }
+    }
+
+    // Function to fetch contributor data and repository details
+    async function fetchContributorData(email) {
+      try {
+        const query = `
+          query {
+            actor(email: "${email}") {
+              name
+            }
+            repository(name: "bitcoin") {
+              name
+              description
+              url
+            }
+          }
+        `;
+        const response = await sendQuery(query);
+
+        // Extract contributor name
+        const contributorName = response.data?.actor?.name || 'Contributor not found';
+        document.getElementById('contributor-name').textContent = contributorName;
+
+        // Extract repository details
+        const repo = response.data?.repository || {};
+        const repoName = repo.name || 'Unknown';
+        const repoDescription = repo.description || 'No description available';
+        const repoUrl = repo.url || '#';
+        document.getElementById('repo-details').innerHTML = `
+          Repository: <a href="${repoUrl}" target="_blank">${repoName}</a><br>
+          Description: ${repoDescription}
+        `;
+      } catch (error) {
+        document.getElementById('contributor-name').textContent = 'Please verify the email or try a different contributor email';
+        document.getElementById('repo-details').innerHTML = 'Please verify the email or try a different contributor email';
+      }
+    }
+
+    // Function to fetch contributor name based on search input
+    async function searchContributor() {
+      const email = elements.searchBar.value.trim();
+      if (!email) {
+        alert('Please enter a valid email address');
+        return;
+      }
+      await fetchContributorData(email);
+    }
+
+    // Function to render the commits over time chart
+    function renderCommitsChart() {
+      // Mock data: Cumulative commits over time from Jan 2009 to Dec 2011
+      const labels = [
+        'Jan 2009', 'Feb 2009', 'Mar 2009', 'Jun 2009', 'Sep 2009', 'Dec 2009',
+        'Mar 2010', 'Jun 2010', 'Sep 2010', 'Dec 2010',
+        'Mar 2011', 'Jun 2011', 'Sep 2011', 'Dec 2011'
+      ];
+      const commitsData = [
+        10, 30, 60, 90, 120, 150, // 2009
+        180, 200, 220, 250,       // 2010
+        260, 265, 270, 271        // 2011 (total 271 commits)
+      ];
+
+      const ctx = document.getElementById('commitsChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Total Commits Over Time',
+            data: commitsData,
+            borderColor: 'rgba(247, 147, 26, 1)', // --bs-primary in dark mode
+            backgroundColor: 'rgba(247, 147, 26, 0.2)',
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Date',
+                color: getComputedStyle(document.body).getPropertyValue('--bs-body-color').trim()
+              },
+              ticks: {
+                color: getComputedStyle(document.body).getPropertyValue('--bs-body-color').trim()
+              },
+              grid: {
+                color: getComputedStyle(document.body).getPropertyValue('--bs-border-color').trim()
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Total Commits',
+                color: getComputedStyle(document.body).getPropertyValue('--bs-body-color').trim()
+              },
+              ticks: {
+                color: getComputedStyle(document.body).getPropertyValue('--bs-body-color').trim()
+              },
+              grid: {
+                color: getComputedStyle(document.body).getPropertyValue('--bs-border-color').trim()
+              },
+              beginAtZero: true
+            }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: getComputedStyle(document.body).getPropertyValue('--bs-body-color').trim()
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Add event listeners for the search button and Enter key
+    elements.searchBtn.addEventListener('click', searchContributor);
+    elements.searchBar.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        elements.searchBtn.click();
+      }
+    });
+
+    // Fetch initial data (Satoshi's profile) and render chart when the page loads
+    window.onload = function() {
+      fetchContributorData("satoshin@gmx.com");
+      renderCommitsChart();
+    };
   </script>
 </body>
 </html>
